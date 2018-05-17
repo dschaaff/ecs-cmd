@@ -19,12 +19,15 @@ arg_name 'The name of the argument'
 flag [:f,:flagname]
 
 desc 'List Items '
-arg_name 'clusters'
+arg_name '<clusters> | <services>'
 command :list do |c|
   c.action do |global_options,options,args|
     if args[0] == 'clusters'
       clust = EcsCmd::Clusters.new
       puts clust.list_clusters
+    elsif args[0] == 'services'
+      serv = EcsCmd::Services.new
+      serv.list_services(args[1])
     else
       puts 'invalid arg supplied'
     end
