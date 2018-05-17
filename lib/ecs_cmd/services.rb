@@ -21,9 +21,11 @@ module EcsCmd
       rows = []
       @service_list.map do |service|
         service_name = service.split('/')[1]
-        rows << [service_name]
+        serv = EcsCmd::Service.new(cluster, service_name)
+        rows << [service_name, serv.desired_count, serv.running_count, serv.pending_count]
       end
-      table = Terminal::Table.new headings: ['SERVICE NAME'], rows: rows
+      table = Terminal::Table.new headings: ['SERVICE NAME', 'DESIRED_COUNT',
+                                             'RUNNING_COUNT', 'PENDING_COUNT'], rows: rows
       puts table
     end
   end
