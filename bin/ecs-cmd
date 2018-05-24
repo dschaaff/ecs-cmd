@@ -28,6 +28,13 @@ command :list do |c|
     elsif args[0] == 'services'
       serv = EcsCmd::Services.new
       serv.list_services(args[1])
+    elsif args[0] == 'service'
+      serv = EcsCmd::Service.new(args[2],args[1])
+      if args[3] == 'events'
+        serv.events
+      else 
+        serv.list_service
+      end
     else
       puts 'invalid arg supplied'
     end
