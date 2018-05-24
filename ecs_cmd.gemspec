@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = 'AWS ECS CLI UItility'
   spec.description   = 'AWS ECS CLI Utility'
-  spec.homepage      = "https://danielschaaff.com"
+  spec.homepage      = 'https://danielschaaff.com'
   spec.license       = 'MIT'
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
@@ -28,8 +28,8 @@ Gem::Specification.new do |spec|
   spec.files = `git ls-files -z`.split("\x0").reject do |f|
     f.match(%r{^(test|spec|features)/})
   end
-  spec.bindir        = 'bin'
-  spec.executables   << 'ecs-cmd'
+  spec.bindir = 'bin'
+  spec.executables << 'ecs-cmd'
   spec.require_paths = ['lib']
   spec.add_runtime_dependency 'aws-sdk'
   spec.add_runtime_dependency 'gli', '2.17.1'

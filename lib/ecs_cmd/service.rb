@@ -32,6 +32,12 @@ module EcsCmd
       @service_stats[0]['task_definition']
     end
 
+    def events
+      @service_stats[0]['events'].each do |e|
+        puts "#{e['created_at']}: #{e['message']}"
+      end
+    end
+
     def name
       @service_stats[0]['service_name']
     end
