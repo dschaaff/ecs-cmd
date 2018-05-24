@@ -76,7 +76,7 @@ module EcsCmd
                                               'MAX HEALTHY', 'MIN HEALTHY'], rows: row1
       row2 = []
       row2 << [task_definition]
-      table2 = Terminal::Table.new headings: ['CURRENT TASK DEFINITION'], rows: row2
+      table2 = Terminal::Table.new headings: ['TASK DEFINITION'], rows: row2
       puts table1
       puts table2
       puts deployments
