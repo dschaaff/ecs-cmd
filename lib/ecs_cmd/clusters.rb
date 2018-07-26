@@ -3,8 +3,8 @@ require 'terminal-table'
 # TODO: create cluster class like I did for services
 module EcsCmd
   class Clusters
-    def initialize
-      @client = Aws::ECS::Client.new(region: 'us-east-1')
+    def initialize(region)
+      @client = Aws::ECS::Client.new(region: region)
     end
 
     def get_clusters

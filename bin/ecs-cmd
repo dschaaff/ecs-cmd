@@ -13,23 +13,23 @@ arguments :strict
 desc 'Describe some switch here'
 switch [:s,:switch]
 
-desc 'Describe some flag here'
-default_value 'the default'
-arg_name 'The name of the argument'
-flag [:f,:flagname]
+desc 'Set the aws region'
+default_value 'us-east-1'
+arg_name 'region'
+flag [:r,:region]
 
-desc 'List Items '
+desc 'Get Items '
 arg_name '<clusters> | <services>'
-command :list do |c|
+command :get do |c|
   c.action do |global_options,options,args|
     if args[0] == 'clusters'
-      clust = EcsCmd::Clusters.new
+      clust = EcsCmd::Clusters.new(global_options[:region])
       puts clust.list_clusters
     elsif args[0] == 'services'
-      serv = EcsCmd::Services.new
+      serv = EcsCmd::Services.new(global_options[:region])
       serv.list_services(args[1])
     elsif args[0] == 'service'
-      serv = EcsCmd::Service.new(args[2],args[1])
+      serv = EcsCmd::Service.new(args[2],args[1], global_options[:region])
       if args[3] == 'events'
         serv.events
       else 
@@ -41,18 +41,18 @@ command :list do |c|
   end
 end
 
-desc 'Add description here'
-arg_name 'Describe arguments here'
-command :get do |c|
-  c.action do |global_options, options, args|
-    if args[0] == 'task_definition'
-      task = EcsCmd::TaskDefinition.new(args[1])
-      puts JSON.pretty_generate(JSON[task.json])
-    elsif
-      puts "not implemented"
-    end
-  end
-end
+# desc 'Add description here'
+# arg_name 'Describe arguments here'
+# command :get do |c|
+#   c.action do |global_options, options, args|
+#     if args[0] == 'task_definition'
+#       task = EcsCmd::TaskDefinition.new(args[1])
+#       puts JSON.pretty_generate(JSON[task.json])
+#     elsif
+#       puts "not implemented"
+#     end
+#   end
+# end
 
 desc 'Describe add here'
 arg_name 'Describe arguments to add here'

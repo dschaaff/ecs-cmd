@@ -3,8 +3,8 @@ require 'terminal-table'
 
 module EcsCmd
   class Service
-    def initialize(cluster, name)
-      @client = Aws::ECS::Client.new(region: 'us-east-1')
+    def initialize(cluster, name, region)
+      @client = Aws::ECS::Client.new(region: region)
       @service_stats = @client.describe_services(cluster: cluster, services: [name])[0]
     end
 
