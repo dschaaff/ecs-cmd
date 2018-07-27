@@ -18,27 +18,56 @@ default_value 'us-east-1'
 arg_name 'region'
 flag [:r,:region]
 
-desc 'Get Items '
-arg_name '<clusters> | <services>'
+desc 'Get Info '
 command :get do |c|
-  c.action do |global_options,options,args|
-    if args[0] == 'clusters'
+  c.command :clusters do |clusters|
+    clusters.desc 'list ecs clusters'
+    clusters.action do |global_options,options,args|
       clust = EcsCmd::Clusters.new(global_options[:region])
-      puts clust.list_clusters
-    elsif args[0] == 'services'
-      serv = EcsCmd::Services.new(global_options[:region])
-      serv.list_services(args[1])
-    elsif args[0] == 'service'
-      serv = EcsCmd::Service.new(args[2],args[1], global_options[:region])
-      if args[3] == 'events'
-        serv.events
-      else 
-        serv.list_service
-      end
-    else
-      puts 'invalid arg supplied'
+      clust.list_clusters
     end
   end
+  c.arg_name '<cluster>'
+  c.command :services do |services|
+    services.desc 'list services in a given ecs cluster'
+    services.action do |global_options, options, args|
+      serv = EcsCmd::Services.new(global_options[:region])
+      serv.list_services(args[0])
+    end
+  end
+  c.arg_name '<service> <cluster'
+  c.command :service do |service|
+    service.desc 'get info about specific ecs services'
+    service.default_desc 'get info about an ecs service'
+    service.action do |global_options, options, args|
+      EcsCmd::Service.new(args[1],args[0], global_options[:region]).list_service
+    end
+    service.arg_name '<service> <cluster>'
+    service.command :events do |events|
+      events.desc 'list events for service'
+      events.action do |global_options, options, args|
+        EcsCmd::Service.new(args[1],args[0], global_options[:region]).events
+      end
+    end
+  end
+  # c.action do |global_options,options,args|
+  #   if args[0] == 'clusters'
+  #     clust = EcsCmd::Clusters.new(global_options[:region])
+  #     puts clust.list_clusters
+  #   elsif args[0] == 'services'
+  #     serv = EcsCmd::Services.new(global_options[:region])
+  #     serv.list_services(args[1])
+  #   elsif args[0] == 'service'
+  #     serv = EcsCmd::Service.new(args[2],args[1], global_options[:region])
+  #     if args[3] == 'events'
+  #       serv.events
+  #     else 
+  #       serv.list_service
+  #     end
+  #   else
+  #     puts 'invalid arg supplied'
+  #   end
+  # end
 end
 
 # desc 'Add description here'
