@@ -27,6 +27,7 @@ command :get do |c|
       clust.list_clusters
     end
   end
+
   c.arg_name '<cluster>'
   c.command :services do |services|
     services.desc 'list services in a given ecs cluster'
@@ -35,39 +36,30 @@ command :get do |c|
       serv.list_services(args[0])
     end
   end
+
   c.arg_name '<service> <cluster'
   c.command :service do |service|
-    service.desc 'get info about specific ecs services'
     service.default_desc 'get info about an ecs service'
     service.action do |global_options, options, args|
       EcsCmd::Service.new(args[1],args[0], global_options[:region]).list_service
     end
     service.arg_name '<service> <cluster>'
+    service.desc 'get event stream for ecs service'
     service.command :events do |events|
       events.desc 'list events for service'
       events.action do |global_options, options, args|
         EcsCmd::Service.new(args[1],args[0], global_options[:region]).events
       end
     end
+    service.arg_name '<service> <cluster> task_definition'
+    service.desc 'get json task definition for service'
+    service.command :task_definition do |task_definition|
+      task_definition.desc 'get the current task definition for the service'
+      task_definition.action do |global_options, options, args|
+        EcsCmd::TaskDefinition.new(EcsCmd::Service.new(args[1],args[0], global_options[:region]).task_definition).print_json
+      end
+    end
   end
-  # c.action do |global_options,options,args|
-  #   if args[0] == 'clusters'
-  #     clust = EcsCmd::Clusters.new(global_options[:region])
-  #     puts clust.list_clusters
-  #   elsif args[0] == 'services'
-  #     serv = EcsCmd::Services.new(global_options[:region])
-  #     serv.list_services(args[1])
-  #   elsif args[0] == 'service'
-  #     serv = EcsCmd::Service.new(args[2],args[1], global_options[:region])
-  #     if args[3] == 'events'
-  #       serv.events
-  #     else 
-  #       serv.list_service
-  #     end
-  #   else
-  #     puts 'invalid arg supplied'
-  #   end
-  # end
 end
 
 # desc 'Add description here'

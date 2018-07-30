@@ -1,6 +1,6 @@
 require 'aws-sdk'
 require 'terminal-table'
-# TODO: create cluster class like I did for services
+
 module EcsCmd
   class Clusters
     def initialize(region)

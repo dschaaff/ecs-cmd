@@ -22,5 +22,10 @@ module EcsCmd
       hash.to_json
     end
 
+    def print_json
+      puts JSON.pretty_generate(JSON[json])
+      
+    end
+
   end
 end
