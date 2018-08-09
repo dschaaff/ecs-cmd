@@ -1,11 +1,18 @@
 require 'spec_helper'
 
 RSpec.describe EcsCmd::Service do
-  # it 'fails on invalid service' do
-  #   expect {
-  #     EcsCmd::Service.new('staging','empty', 'us-east-1').list_service
-  #   }.to raise_error(RuntimeError, 'service does not appear to exist')
-  # end
+  context 'with non existent service' do
+    before(:each) do
+      Aws.config[:ecs] = {
+        stub_responses: {}
+      }
+    end
+    it 'fails on invalid service' do
+      expect do
+        EcsCmd::Service.new('staging', 'empty', 'us-east-1').list_service
+      end.to raise_error(RuntimeError, 'service does not appear to exist')
+    end
+  end
 
   it 'gets service arn' do
     expect(EcsCmd::Service.new('staging', 'foo', 'us-east-1').arn).to eq('arn:aws:ecs:us-east-1:111111111111:service/foo')

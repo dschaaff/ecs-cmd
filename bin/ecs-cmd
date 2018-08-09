@@ -11,18 +11,18 @@ subcommand_option_handling :normal
 arguments :strict
 
 desc 'Describe some switch here'
-switch [:s,:switch]
+switch %i[s switch]
 
 desc 'Set the aws region'
 default_value 'us-east-1'
 arg_name 'region'
-flag [:r,:region]
+flag %i[r region]
 
 desc 'Get Info '
 command :get do |c|
   c.command :clusters do |clusters|
     clusters.desc 'list ecs clusters'
-    clusters.action do |global_options,options,args|
+    clusters.action do |global_options, _options, _args|
       clust = EcsCmd::Clusters.new(global_options[:region])
       clust.list_clusters
     end
@@ -31,7 +31,7 @@ command :get do |c|
   c.arg_name '<cluster>'
   c.command :services do |services|
     services.desc 'list services in a given ecs cluster'
-    services.action do |global_options, options, args|
+    services.action do |global_options, _options, args|
       serv = EcsCmd::Services.new(global_options[:region])
       serv.list_services(args[0])
     end
@@ -40,23 +40,15 @@ command :get do |c|
   c.arg_name '<service> <cluster'
   c.command :service do |service|
     service.default_desc 'get info about an ecs service'
+    service.switch %i[e events], desc: 'get ecs events', default_value: false
+    service.switch %i[t task_definition], desc: 'get current task definition for service', default_value: false
     service.action do |global_options, options, args|
-      EcsCmd::Service.new(args[1],args[0], global_options[:region]).list_service
-    end
-    service.arg_name '<service> <cluster>'
-    service.desc 'get event stream for ecs service'
-    service.command :events do |events|
-      events.desc 'list events for service'
-      events.action do |global_options, options, args|
-        EcsCmd::Service.new(args[1],args[0], global_options[:region]).events
-      end
-    end
-    service.arg_name '<service> <cluster> task_definition'
-    service.desc 'get json task definition for service'
-    service.command :task_definition do |task_definition|
-      task_definition.desc 'get the current task definition for the service'
-      task_definition.action do |global_options, options, args|
-        EcsCmd::TaskDefinition.new(EcsCmd::Service.new(args[1],args[0], global_options[:region]).task_definition).print_json
+      if options[:events] == false && options[:task_definition] == false
+        EcsCmd::Service.new(args[1], args[0], global_options[:region]).list_service
+      elsif options[:events] == true
+        EcsCmd::Service.new(args[1], args[0], global_options[:region]).events
+      else
+        EcsCmd::TaskDefinition.new(EcsCmd::Service.new(args[1], args[0], global_options[:region]).task_definition).print_json
       end
     end
   end
@@ -78,8 +70,8 @@ end
 desc 'Describe add here'
 arg_name 'Describe arguments to add here'
 command :add do |c|
-  c.action do |global_options,options,args|
-    puts "add command ran"
+  c.action do |_global_options, _options, _args|
+    puts 'add command ran'
   end
 end
 
@@ -91,7 +83,7 @@ end
 #   end
 # end
 
-pre do |global,command,options,args|
+pre do |_global, _command, _options, _args|
   # Pre logic here
   # Return true to proceed; false to abort and not call the
   # chosen command
@@ -100,13 +92,13 @@ pre do |global,command,options,args|
   true
 end
 
-post do |global,command,options,args|
+post do |global, command, options, args|
   # Post logic here
   # Use skips_post before a command to skip this
   # block on that command only
 end
 
-on_error do |exception|
+on_error do |_exception|
   # Error logic here
   # return false to skip default error handling
   true
