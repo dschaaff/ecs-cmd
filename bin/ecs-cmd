@@ -10,9 +10,6 @@ version EcsCmd::VERSION
 subcommand_option_handling :normal
 arguments :strict
 
-# desc 'Describe some switch here'
-# switch %i[s switch]
-
 desc 'Set the aws region'
 default_value 'us-east-1'
 arg_name 'region'
@@ -49,34 +46,24 @@ command :get do |c|
       elsif options[:events] == true
         EcsCmd::Service.new(options[:cluster], args[0], global_options[:region]).events
       else
-        EcsCmd::TaskDefinition.new(EcsCmd::Service.new(options[:cluster], args[0], global_options[:region]).task_definition).print_json
+        EcsCmd::TaskDefinition.new(EcsCmd::Service.new(options[:cluster], args[0], global_options[:region])
+        .task_definition).print_json
       end
     end
   end
 end
 
-# desc 'Add description here'
-# arg_name 'Describe arguments here'
-# command :get do |c|
-#   c.action do |global_options, options, args|
-#     if args[0] == 'task_definition'
-#       task = EcsCmd::TaskDefinition.new(args[1])
-#       puts JSON.pretty_generate(JSON[task.json])
-#     elsif
-#       puts "not implemented"
-#     end
-#   end
-# end
-
 desc 'Run a One Off Task On an ECS Cluster'
 arg_name 'Describe arguments to add here'
 command :'run-task' do |c|
   c.flag %i[c cluster], desc: 'cluster name', arg_name: 'cluster', required: true
+  c.flag %i[n container-name], desc: 'container name', arg_name: 'container name', required: true
   c.flag %i[t task-definition], desc: 'the task definition to use for task', required: true
   c.flag %i[i image], desc: 'docker image to use for task', arg_name: 'image', required: true
   c.flag %i[d command], desc: 'override task definition command', arg_name: 'command'
   c.action do |_global_options, options, _args|
     puts options
+    
   end
 end
 
