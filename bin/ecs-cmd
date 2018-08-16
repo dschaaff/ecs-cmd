@@ -41,13 +41,13 @@ command :get do |c|
     service.switch %i[e events], desc: 'get ecs events', default_value: false
     service.switch %i[t task_definition], desc: 'get current task definition for service', default_value: false
     service.action do |global_options, options, args|
-      if options[:events] == false && options[:task_definition] == false
-        EcsCmd::Service.new(options[:cluster], args[0], global_options[:region]).list_service
-      elsif options[:events] == true
+      if options[:events] == true
         EcsCmd::Service.new(options[:cluster], args[0], global_options[:region]).events
+      elsif options[:task_definition] == true
+        task_def = EcsCmd::Service.new(options[:cluster], args[0], global_options[:region]).task_definition  
+        EcsCmd::TaskDefinition.new(task_def, global_options[:region]).print_json
       else
-        EcsCmd::TaskDefinition.new(EcsCmd::Service.new(options[:cluster], args[0], global_options[:region])
-        .task_definition).print_json
+        EcsCmd::Service.new(options[:cluster], args[0], global_options[:region]).list_service
       end
     end
   end
@@ -63,7 +63,6 @@ command :'run-task' do |c|
   c.flag %i[d command], desc: 'override task definition command', arg_name: 'command'
   c.action do |_global_options, options, _args|
     puts options
-    
   end
 end
 
