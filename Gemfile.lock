@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ecs_cmd (0.1.0)
+    ecs_cmd (0.1.1)
       aws-sdk
       gli (= 2.17.1)
       terminal-table
@@ -609,4 +609,4 @@ DEPENDENCIES
   rspec (~> 3.0)
 
 BUNDLED WITH
-   1.16.1
+   1.16.3
