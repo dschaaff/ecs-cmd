@@ -34,7 +34,6 @@ command :get do |c|
     end
   end
 
-  c.arg_name '<service>'
   c.command :service do |service|
     service.flag %i[c cluster], desc: 'cluster name', arg_name: 'cluster', required: true
     service.flag %i[s service], desc: 'service name', arg_name: 'service', required: true
@@ -55,7 +54,6 @@ command :get do |c|
 end
 
 desc 'Run a One Off Task On an ECS Cluster'
-arg_name 'Describe arguments to add here'
 command :'run-task' do |c|
   c.flag %i[c cluster], desc: 'cluster name', arg_name: 'cluster', required: true
   c.flag %i[n container-name], desc: 'container name', arg_name: 'container name', required: false
