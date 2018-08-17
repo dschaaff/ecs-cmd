@@ -1,5 +1,7 @@
 sudo: false
 language: ruby
+env: 
+  - GLI_DEBUG=true
 rvm:
   - 2.4.3
   - 2.5.1

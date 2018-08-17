@@ -37,17 +37,18 @@ command :get do |c|
   c.arg_name '<service>'
   c.command :service do |service|
     service.flag %i[c cluster], desc: 'cluster name', arg_name: 'cluster', required: true
+    service.flag %i[s service], desc: 'service name', arg_name: 'service', required: true
     service.default_desc 'get info about an ecs service'
     service.switch %i[e events], desc: 'get ecs events', default_value: false
     service.switch %i[t task_definition], desc: 'get current task definition for service', default_value: false
-    service.action do |global_options, options, args|
+    service.action do |global_options, options|
       if options[:events] == true
-        EcsCmd::Service.new(options[:cluster], args[0], global_options[:region]).events
+        EcsCmd::Service.new(options[:cluster], options[:service], global_options[:region]).events
       elsif options[:task_definition] == true
-        task_def = EcsCmd::Service.new(options[:cluster], args[0], global_options[:region]).task_definition  
+        task_def = EcsCmd::Service.new(options[:cluster], options[:service], global_options[:region]).task_definition
         EcsCmd::TaskDefinition.new(task_def, global_options[:region]).print_json
       else
-        EcsCmd::Service.new(options[:cluster], args[0], global_options[:region]).list_service
+        EcsCmd::Service.new(options[:cluster], options[:service], global_options[:region]).list_service
       end
     end
   end
@@ -57,12 +58,20 @@ desc 'Run a One Off Task On an ECS Cluster'
 arg_name 'Describe arguments to add here'
 command :'run-task' do |c|
   c.flag %i[c cluster], desc: 'cluster name', arg_name: 'cluster', required: true
-  c.flag %i[n container-name], desc: 'container name', arg_name: 'container name', required: true
+  c.flag %i[n container-name], desc: 'container name', arg_name: 'container name', required: false
   c.flag %i[t task-definition], desc: 'the task definition to use for task', required: true
-  c.flag %i[i image], desc: 'docker image to use for task', arg_name: 'image', required: true
+  c.flag %i[i image], desc: 'docker image to use for task', arg_name: 'image', required: false
   c.flag %i[d command], desc: 'override task definition command', arg_name: 'command'
-  c.action do |_global_options, options, _args|
-    puts options
+  c.action do |global_options, options, _args|
+    command = options[:d].tokenize
+    if options[:i]
+      puts "generating new task definition with image #{options[:i]}"
+      new_task = EcsCmd::TaskDefinition.new(options[:t], global_options[:region]).update_image(options[:i])
+      puts "registered task definition #{new_task}"
+      EcsCmd::RunTask.new(global_options[:region], options[:c], new_task, options[:n], command).run
+    else
+      EcsCmd::RunTask.new(global_options[:region], options[:c], options[:t], options[:n], command).run
+    end
   end
 end
 

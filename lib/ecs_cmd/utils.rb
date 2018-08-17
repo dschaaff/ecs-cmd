@@ -13,3 +13,12 @@ module EcsCmd
     def self.parse_image_tag(image); end
   end
 end
+
+class String
+  def tokenize
+    self.
+      split(/\s(?=(?:[^'"]|'[^']*'|"[^"]*")*$)/).
+      select {|s| not s.empty? }.
+      map {|s| s.gsub(/(^ +)|( +$)|(^["']+)|(["']+$)/,'')}
+  end
+end
