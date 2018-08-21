@@ -1,4 +1,4 @@
-require 'aws-sdk'
+require 'aws-sdk-ecs'
 require 'terminal-table'
 require 'ecs_cmd/utils'
 

@@ -31,7 +31,7 @@ Gem::Specification.new do |spec|
   spec.bindir = 'bin'
   spec.executables << 'ecs-cmd'
   spec.require_paths = ['lib']
-  spec.add_runtime_dependency 'aws-sdk'
+  spec.add_runtime_dependency 'aws-sdk-ecs'
   spec.add_runtime_dependency 'gli', '2.17.1'
   spec.add_runtime_dependency 'terminal-table'
 
