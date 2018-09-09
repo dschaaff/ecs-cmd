@@ -34,7 +34,7 @@ module EcsCmd
         t << ['updated at', e['updated_at']]
         t << ["\n"]
       end
-      table = Terminal::Table.new headings: ['DEPLOYMENTS'], rows: t
+      table = Terminal::Table.new headings: ['DEPLOYMENTS', ''], rows: t
       table
     end
 
@@ -115,7 +115,7 @@ module EcsCmd
       container_instances.each do |e|
         t << [container_instance_id(e), container_instance_ip(container_instance_id(e))]
       end
-      table = Terminal::Table.new headings: ['INSTANCES'], rows: t
+      table = Terminal::Table.new headings: ['INSTANCE ID', 'IP'], rows: t
       table
     end
 
