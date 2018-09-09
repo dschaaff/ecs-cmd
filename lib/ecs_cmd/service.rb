@@ -58,6 +58,12 @@ module EcsCmd
       @service_stats[0]['task_definition']
     end
 
+    def task_family
+      # known issue, won't work with / in task family names
+      # TODO: improve this later
+      @service_stats[0]['task_definition'].split('/')[1].split(':')[0]
+    end
+
     def tasks
       @client.list_tasks(cluster: @cluster, service_name: @name)[0]
     end

@@ -73,6 +73,32 @@ command :'run-task' do |c|
   end
 end
 
+desc 'SSH into Host Task is Running On'
+command :ssh do |c|
+  c.flag %i[c cluster], desc: 'cluster name', arg_name: 'cluster', required: true
+  c.flag %i[s service], desc: 'service name', arg_name: 'service', required: true
+  c.action do |global_options, options, args|
+    ip = EcsCmd::Service.new(options[:c], options[:s], global_options[:region]).container_instance_ips[0]
+    puts "opening ssh connection to  #{ip}"
+    EcsCmd::Exec.ssh(ip)
+  end
+end
+
+desc 'Execute a Command Within a Service\'s Container'
+arg_name 'command', :required
+command :exec do |c|
+  c.flag %i[c cluster], desc: 'cluster name', arg_name: 'cluster', required: true
+  c.flag %i[s service], desc: 'service name', arg_name: 'service', required: true
+  c.action do |global_options, options, args|
+    service = EcsCmd::Service.new(options[:c], options[:s], global_options[:region])
+    ip = service.container_instance_ips[0]
+    task_family = service.task_family
+    command = args.join(' ')
+    #puts command
+    EcsCmd::Exec.execute(task_family, ip, command)
+  end
+end
+
 # desc 'Describe complete here'
 # arg_name 'Describe arguments to complete here'
 # command :complete do |c|
