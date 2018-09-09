@@ -19,7 +19,6 @@ module EcsCmd
       # used to run arbitrary command inside a container
       def execute(task_family, ip, command)
         cmd = "docker exec -i -t `#{docker_ps_task(task_family)}` #{command}"
-        puts ssh_cmd(ip) + " '#{cmd}' " 
         Open3.popen2e(ssh_cmd(ip) + " '#{cmd}' ") do |stdin, stdout, stderr, status_thread|
           stdout.each_line do |line|
             puts line
@@ -33,7 +32,12 @@ module EcsCmd
         exec(ssh_cmd(ip) + " '#{cmd}' ")
       end
 
-      # docker ps command to get container id 
+      def logs(task_family, ip, lines)
+        cmd = "docker logs -f --tail=#{lines} `#{docker_ps_task(task_family)}`"
+        exec(ssh_cmd(ip) + " '#{cmd}' ")
+      end
+
+      # docker ps command to get container id
       def docker_ps_task(task_family)
         "docker ps -n 1 -q --filter name=#{Shellwords.shellescape(task_family)}"
       end

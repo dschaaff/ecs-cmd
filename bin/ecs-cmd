@@ -107,11 +107,23 @@ command 'shell' do |c|
     service = EcsCmd::Service.new(options[:c], options[:s], global_options[:region])
     ip = service.container_instance_ips[0]
     task_family = service.task_family
-    shell = options[:sh] ? "sh" : "bash"
+    shell = options[:sh] ? 'sh' : 'bash'
     EcsCmd::Exec.shell(task_family, ip, shell)
   end
 end
 
+desc "Tail Logs From a Service's Container"
+command 'logs' do |c|
+  c.flag %i[c cluster], desc: 'cluster name', arg_name: 'cluster', required: true
+  c.flag %i[s service], desc: 'service name', arg_name: 'service', required: true
+  c.flag %i[l lines], desc: 'number of historical lines to tail', arg_name: 'lines', default_value: 30, required: false
+  c.action do |global_options, options, args|
+    service = EcsCmd::Service.new(options[:c], options[:s], global_options[:region])
+    ip = service.container_instance_ips[0]
+    task_family = service.task_family
+    EcsCmd::Exec.logs(task_family, ip, options[:lines])
+  end
+end
 # desc 'Describe complete here'
 # arg_name 'Describe arguments to complete here'
 # command :complete do |c|
