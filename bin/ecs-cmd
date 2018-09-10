@@ -11,7 +11,7 @@ subcommand_option_handling :normal
 arguments :strict
 
 desc 'Set the aws region'
-default_value 'us-east-1'
+default_value ENV['AWS_DEFAULT_REGION'] || 'us-east-1'
 arg_name 'region'
 flag %i[r region]
 
