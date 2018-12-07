@@ -17,8 +17,8 @@ module EcsCmd
       end
 
       # used to run arbitrary command inside a container
-      def execute(task_family, ip, command)
-        cmd = "docker exec -i -t `#{docker_ps_task(task_family)}` #{command}"
+      def execute(task_family, ip, command, user = 'root')
+        cmd = "docker exec -i -t -u #{user} `#{docker_ps_task(task_family)}` #{command}"
         Open3.popen2e(ssh_cmd(ip) + " '#{cmd}' ") do |stdin, stdout, stderr, status_thread|
           stdout.each_line do |line|
             puts line
@@ -27,8 +27,8 @@ module EcsCmd
       end
 
       # used to open a shell within a container?
-      def shell(task_family, ip, shell='bash')
-        cmd = "docker exec -i -t `#{docker_ps_task(task_family)}` #{shell}"
+      def shell(task_family, ip, shell = 'bash', user = 'root')
+        cmd = "docker exec -i -t -u #{user} `#{docker_ps_task(task_family)}` #{shell}"
         exec(ssh_cmd(ip) + " '#{cmd}' ")
       end
 

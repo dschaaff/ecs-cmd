@@ -89,12 +89,13 @@ arg_name 'command', :required
 command :exec do |c|
   c.flag %i[c cluster], desc: 'cluster name', arg_name: 'cluster', required: true
   c.flag %i[s service], desc: 'service name', arg_name: 'service', required: true
+  c.flag %i[u user], desc: 'user name or uid', arg_name: 'user', default_value: 'root', required: false
   c.action do |global_options, options, args|
     service = EcsCmd::Service.new(options[:c], options[:s], global_options[:region])
     ip = service.container_instance_ips[0]
     task_family = service.task_family
     command = args.join(' ')
-    EcsCmd::Exec.execute(task_family, ip, command)
+    EcsCmd::Exec.execute(task_family, ip, command, options[:u])
   end
 end
 
@@ -102,13 +103,14 @@ desc "Open a Shell Inside a Service's Container"
 command 'shell' do |c|
   c.flag %i[c cluster], desc: 'cluster name', arg_name: 'cluster', required: true
   c.flag %i[s service], desc: 'service name', arg_name: 'service', required: true
+  c.flag %i[u user], desc: 'user name or uid', arg_name: 'user', default_value: 'root', required: false
   c.switch %i[sh], desc: 'use sh instead of bash', default_value: false
   c.action do |global_options, options, args|
     service = EcsCmd::Service.new(options[:c], options[:s], global_options[:region])
     ip = service.container_instance_ips[0]
     task_family = service.task_family
     shell = options[:sh] ? 'sh' : 'bash'
-    EcsCmd::Exec.shell(task_family, ip, shell)
+    EcsCmd::Exec.shell(task_family, ip, shell, options[:u])
   end
 end
 
