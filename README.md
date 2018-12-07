@@ -137,7 +137,9 @@ ecs-cmd get service -c production -s foo
 
 ### Logs
 
-*requires ssh access to instance*
+**_works for ec2 type services only_**
+
+**_requires ssh access to instance_**
 
 Streams logs from 1 of a services running tasks using the docker logs command
 
@@ -158,7 +160,7 @@ COMMAND OPTIONS
 ### Run Task
 
 Run a one off task in ECS. This will poll for the task to exit and report its exit code. This is
-handy for tasks like rails migrations. If a docker image is passed it will create a new revision of 
+handy for tasks like rails migrations in ci/cd pipelines. If a docker image is passed it will create a new revision of 
 the task definition prior to running the task.
 
 ```shell
@@ -179,7 +181,9 @@ COMMAND OPTIONS
 
 ### Shell
 
-*requires ssh access to instance*
+**_works for ec2 type services only_**
+
+**_requires ssh access to instance_**
 
 Open a shell inside of a container for a given service.
 
@@ -200,7 +204,9 @@ COMMAND OPTIONS
 
 ### SSH
 
-*requires ssh access to instance*
+**_works for ec2 type services only_**
+
+**_requires ssh access to instance_**
 
 SSH onto a host where a container for a given service is running.
 
