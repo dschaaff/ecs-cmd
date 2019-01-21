@@ -116,6 +116,10 @@ module EcsCmd
       @service_stats[0]['service_name']
     end
 
+    def launch_type
+      @service_stats[0]['deployments'][0]['launch_type']
+    end
+
     def list_container_instances
       t = []
       container_instances.each do |e|
@@ -137,7 +141,7 @@ module EcsCmd
       table2 = Terminal::Table.new headings: ['TASK DEFINITION'], rows: row2
       puts table1
       puts table2
-      puts list_container_instances
+      puts list_container_instances unless launch_type == 'FARGATE'
       puts deployments
     end
   end

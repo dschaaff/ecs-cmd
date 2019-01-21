@@ -57,4 +57,8 @@ RSpec.describe EcsCmd::Service do
   it 'gets service name' do
     expect(EcsCmd::Service.new('staging', 'foo', 'us-east-1').name).to eq('foo')
   end
+
+  it 'gets launch type' do
+    expect(EcsCmd::Service.new('staging', 'foo', 'us-east-1').launch_type).to eq('EC2')
+  end
 end
