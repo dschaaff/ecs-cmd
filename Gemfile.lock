@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ecs_cmd (0.1.4)
+    ecs_cmd (0.1.5)
       aws-sdk-ec2
       aws-sdk-ecs
       gli (= 2.18.0)

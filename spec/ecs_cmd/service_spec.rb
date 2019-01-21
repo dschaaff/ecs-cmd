@@ -27,7 +27,7 @@ RSpec.describe EcsCmd::Service do
   end
 
   it 'gets deployment configuration' do
-    expect(EcsCmd::Service.new('staging', 'foo', 'us-east-1').deployment_configuration.to_s).to include('maximum_percent=200')
+    expect(EcsCmd::Service.new('staging', 'foo', 'us-east-1').deployment_configuration.to_s).to eq('{:maximum_percent=>200, :minimum_healthy_percent=>100}')
   end
 
   it 'gets desired count' do
