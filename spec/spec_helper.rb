@@ -1,4 +1,6 @@
 require "bundler/setup"
+require 'simplecov'
+SimpleCov.start
 require "ecs_cmd"
 
 RSpec.configure do |config|

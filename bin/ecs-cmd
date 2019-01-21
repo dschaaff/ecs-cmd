@@ -29,8 +29,8 @@ command :get do |c|
     services.flag %i[c cluster], desc: 'cluster name', arg_name: 'cluster', required: true
     services.desc 'list services in a given ecs cluster'
     services.action do |global_options, options, _args|
-      serv = EcsCmd::Services.new(global_options[:region])
-      serv.list_services(options[:cluster])
+      serv = EcsCmd::Services.new(global_options[:region],options[:cluster])
+      serv.list_services
     end
   end
 

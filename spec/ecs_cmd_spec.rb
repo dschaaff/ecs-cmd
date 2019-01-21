@@ -5,6 +5,13 @@ RSpec.describe EcsCmd do
         cluster_arns:
           ['arn:aws:ecs:us-east-1:111111111111:cluster/staging']
       },
+      list_services: {
+        service_arns: [
+          'arn:aws:ecs:us-east-1:111111111111:service/foo',
+          'arn:aws:ecs:us-east-1:111111111111:service/bar',
+          'arn:aws:ecs:us-east-1:111111111111:service/staging/baz'
+        ]
+      },
       describe_clusters: {
         clusters: [
           cluster_arn: 'arn:aws:ecs:us-east-1:111111111111:cluster/staging',
