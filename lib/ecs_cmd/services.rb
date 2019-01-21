@@ -1,6 +1,5 @@
 require 'aws-sdk-ecs'
 require 'terminal-table'
-require 'pry'
 
 module EcsCmd
   class Services
