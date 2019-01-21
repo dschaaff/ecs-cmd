@@ -1,5 +1,6 @@
 require 'aws-sdk-ecs'
 require 'terminal-table'
+require 'pry'
 
 module EcsCmd
   class Services
@@ -21,7 +22,7 @@ module EcsCmd
       @service_list = get_services(cluster)
       rows = []
       @service_list.map do |service|
-        service_name = service.split('/')[1]
+        service_name = service.split(%r{/}).last
         serv = EcsCmd::Service.new(cluster, service_name, reg)
         rows << [service_name, serv.desired_count, serv.running_count, serv.pending_count]
       end
