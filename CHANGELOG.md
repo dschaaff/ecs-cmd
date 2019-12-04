@@ -1,3 +1,8 @@
+# 0.1.7
+
+- bugfix: Run task did not work when task definition contained secrets.
+- bugfix: Failed to parse image name for images from docker hub (e.g. redis:alpine)
+
 # 0.1.6
 
 - bugfix: remove pry require
