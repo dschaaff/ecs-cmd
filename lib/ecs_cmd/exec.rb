@@ -16,30 +16,31 @@ module EcsCmd
         exec(ssh_cmd(ip))
       end
 
-      # used to run arbitrary command inside a container
-      def execute(task_family, ip, command, user = 'root')
-        cmd = "docker exec -i -t -u #{user} `#{docker_ps_task(task_family)}` #{command}"
-        Open3.popen2e(ssh_cmd(ip) + " '#{cmd}' ") do |stdin, stdout, stderr, status_thread|
-          stdout.each_line do |line|
-            puts line
-          end
-        end
-      end
-
-      # used to open a shell within a container?
-      def shell(task_family, ip, shell = 'bash', user = 'root')
-        cmd = "docker exec -i -t -u #{user} `#{docker_ps_task(task_family)}` #{shell}"
+      def execute(task_family, ip, command, user = 'root', sudo = true)
+        cmd = if sudo == true
+                "sudo docker exec -i -t -u #{user} `#{docker_ps_task(task_family)}` #{command}"
+              else
+                "docker exec -i -t -u #{user} `#{docker_ps_task(task_family)}` #{command}"
+              end
         exec(ssh_cmd(ip) + " '#{cmd}' ")
       end
 
-      def logs(task_family, ip, lines)
-        cmd = "docker logs -f --tail=#{lines} `#{docker_ps_task(task_family)}`"
+      def logs(task_family, ip, lines, sudo)
+        cmd = if sudo == true
+                "sudo docker logs -f --tail=#{lines} `#{docker_ps_task(task_family)}`"
+              else
+                "docker logs -f --tail=#{lines} `#{docker_ps_task(task_family)}`"
+              end
         exec(ssh_cmd(ip) + " '#{cmd}' ")
       end
 
       # docker ps command to get container id
-      def docker_ps_task(task_family)
-        "docker ps -n 1 -q --filter name=#{Shellwords.shellescape(task_family)}"
+      def docker_ps_task(task_family, sudo = true)
+        if sudo == true
+          "sudo docker ps -n 1 -q --filter name=#{Shellwords.shellescape(task_family)}"
+        else
+          "docker ps -n 1 -q --filter name=#{Shellwords.shellescape(task_family)}"
+        end
       end
     end
   end

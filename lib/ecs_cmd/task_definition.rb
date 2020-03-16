@@ -45,7 +45,7 @@ module EcsCmd
     end
 
     def execution_role_arn
-      @task_def['execution_role_arn']
+      @task_def['execution_role_arn'] || ''
     end
  
     def update_image(image)

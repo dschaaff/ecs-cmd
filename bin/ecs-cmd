@@ -84,33 +84,19 @@ command :ssh do |c|
   end
 end
 
-desc 'Execute a Command Within a Service\'s Container'
+desc "Open a Shell Inside a Service's Container"
 arg_name 'command', :required
-command :exec do |c|
+command 'exec' do |c|
   c.flag %i[c cluster], desc: 'cluster name', arg_name: 'cluster', required: true
   c.flag %i[s service], desc: 'service name', arg_name: 'service', required: true
-  c.flag %i[u user], desc: 'user name or uid', arg_name: 'user', default_value: 'root', required: false
+  c.flag %i[u user], desc: 'user name or uid of container user', arg_name: 'user', default_value: 'root', required: false
+  c.switch %i[sudo], desc: 'use sudo for docker commands, necessary if not in docker group', default_value: true
   c.action do |global_options, options, args|
     service = EcsCmd::Service.new(options[:c], options[:s], global_options[:region])
     ip = service.container_instance_ips[0]
     task_family = service.task_family
     command = args.join(' ')
-    EcsCmd::Exec.execute(task_family, ip, command, options[:u])
-  end
-end
-
-desc "Open a Shell Inside a Service's Container"
-command 'shell' do |c|
-  c.flag %i[c cluster], desc: 'cluster name', arg_name: 'cluster', required: true
-  c.flag %i[s service], desc: 'service name', arg_name: 'service', required: true
-  c.flag %i[u user], desc: 'user name or uid', arg_name: 'user', default_value: 'root', required: false
-  c.switch %i[sh], desc: 'use sh instead of bash', default_value: false
-  c.action do |global_options, options, args|
-    service = EcsCmd::Service.new(options[:c], options[:s], global_options[:region])
-    ip = service.container_instance_ips[0]
-    task_family = service.task_family
-    shell = options[:sh] ? 'sh' : 'bash'
-    EcsCmd::Exec.shell(task_family, ip, shell, options[:u])
+    EcsCmd::Exec.execute(task_family, ip, command, options[:u], options[:sudo])
   end
 end
 
@@ -119,11 +105,12 @@ command 'logs' do |c|
   c.flag %i[c cluster], desc: 'cluster name', arg_name: 'cluster', required: true
   c.flag %i[s service], desc: 'service name', arg_name: 'service', required: true
   c.flag %i[l lines], desc: 'number of historical lines to tail', arg_name: 'lines', default_value: 30, required: false
-  c.action do |global_options, options, args|
+  c.switch %i[sudo], desc: 'use sudo for docker commands, necessary if not in docker group', default_value: true
+  c.action do |global_options, options|
     service = EcsCmd::Service.new(options[:c], options[:s], global_options[:region])
     ip = service.container_instance_ips[0]
     task_family = service.task_family
-    EcsCmd::Exec.logs(task_family, ip, options[:lines])
+    EcsCmd::Exec.logs(task_family, ip, options[:lines], options[:sudo])
   end
 end
 # desc 'Describe complete here'
