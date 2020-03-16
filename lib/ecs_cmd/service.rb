@@ -3,6 +3,7 @@ require 'aws-sdk-ec2'
 require 'terminal-table'
 
 module EcsCmd
+# rubocop:disable Metrics/ClassLength
   class Service
     def initialize(cluster, name, region)
       @client = Aws::ECS::Client.new(region: region)
@@ -63,17 +64,25 @@ module EcsCmd
       # TODO: improve this later
       @service_stats[0]['task_definition'].split('/')[1].split(':')[0]
     end
-
+    # list task arns for a service
     def tasks
       @client.list_tasks(cluster: @cluster, service_name: @name)[0]
     end
-
+    # list all container instance arns for given service's tasks
     def container_instances
       instances = []
       @client.describe_tasks(cluster: @cluster, tasks: tasks)[0].each do |e|
         instances << e[:container_instance_arn]
       end
       instances
+    end
+    # return container instance arn for given task id
+    def container_instance(task_arn)
+    instance = []
+    @client.describe_tasks(cluster: @cluster, tasks: [task_arn])[0].each do |e|
+      instance << e[:container_instance_arn]
+    end
+    instance[0]
     end
 
     def container_instance_id(arn)
@@ -120,29 +129,45 @@ module EcsCmd
       @service_stats[0]['deployments'][0]['launch_type']
     end
 
-    def list_container_instances
+    def tasks_table
       t = []
-      container_instances.each do |e|
-        t << [container_instance_id(e), container_instance_ip(container_instance_id(e))]
+      if launch_type == 'FARGATE'
+        tasks.each do |e|
+          t << [e]
+        end
+        table = Terminal::Table.new headings: ['TASK_ID'], rows: t
+      else
+        tasks.each do |e|
+          t << [e, container_instance_id(container_instance(e)),
+                container_instance_ip(container_instance_id(container_instance(e)))]
+        end
+        table = Terminal::Table.new headings: ['TASK_ID', 'INSTANCE_ID', 'IP'], rows: t
       end
-      table = Terminal::Table.new headings: ['INSTANCE ID', 'IP'], rows: t
       table
     end
 
-    def list_service
+    def overview_table
       row1 = []
       row1 << [name, status, running_count, desired_count, pending_count,
                deployment_configuration['maximum_percent'], deployment_configuration['minimum_healthy_percent']]
       table1 = Terminal::Table.new headings: ['NAME', 'STATUS', 'RUNNING COUNT',
                                               'DESIRED COUNT', 'PENDING COUNT',
                                               'MAX HEALTHY', 'MIN HEALTHY'], rows: row1
+      table1
+    end
+
+    def task_def_table
       row2 = []
       row2 << [task_definition]
       table2 = Terminal::Table.new headings: ['TASK DEFINITION'], rows: row2
-      puts table1
-      puts table2
-      puts list_container_instances unless launch_type == 'FARGATE'
+      table2
+    end
+
+    def list_service
+      puts overview_table
+      puts task_def_table
       puts deployments
+      puts tasks_table
     end
   end
 end

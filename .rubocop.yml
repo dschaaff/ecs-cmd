@@ -1,4 +1,8 @@
+inherit_from: .rubocop_todo.yml
+
 Metrics/LineLength:
   Max: 120
+Metrics/MethodLength:
+  Max: 20
 Style/FrozenStringLiteralComment:
   Enabled: false

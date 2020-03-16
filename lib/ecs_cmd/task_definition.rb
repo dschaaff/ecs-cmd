@@ -56,12 +56,14 @@ module EcsCmd
         end
       end
       @new_task_def
-      resp = register_task_definition(@new_task_def[:family], @new_task_def[:container_definitions], @new_task_def[:volumes], @new_task_def[:task_role_arn])
+      resp = register_task_definition(@new_task_def[:family], @new_task_def[:container_definitions],
+                                      @new_task_def[:volumes], @new_task_def[:task_role_arn])
       resp.task_definition.task_definition_arn
     end
 
     def register_task_definition(family, container_definitions, volumes, task_role_arn)
-      @client.register_task_definition(family: family, container_definitions: container_definitions, volumes: volumes, task_role_arn: task_role_arn, execution_role_arn: execution_role_arn)
+      @client.register_task_definition(family: family, container_definitions: container_definitions, volumes: volumes,
+                                       task_role_arn: task_role_arn, execution_role_arn: execution_role_arn)
     end
 
     def print_json
