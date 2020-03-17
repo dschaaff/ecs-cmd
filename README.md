@@ -15,8 +15,8 @@ The gem uses the standard aws crendential chain for authentication actions. See 
 
 ## Usage
 
-```
-ecs-cmd
+```text
+$ ecs-cmd
 NAME
     ecs-cmd - Command utility for interacting with AWS ECS
 
@@ -47,8 +47,8 @@ These allow you to query information from ECS.
 
 #### Get Clusters
 
-```
- ecs-cmd get clusters
+```text
+ $ ecs-cmd get clusters
 +--------------------+--------------------------+----------+---------------+---------------+
 | CLUSTER NAME       | CONTAINER_INSTANCE_COUNT | SERVICES | RUNNING_TASKS | PENDING_TASKS |
 +--------------------+--------------------------+----------+---------------+---------------+
@@ -61,8 +61,8 @@ These allow you to query information from ECS.
 
 Prints an overview of the services in a given cluster.
 
-```shella
-ecs-cmd get services --help
+```text
+$ ecs-cmd get services --help
 NAME
     services -
 
@@ -73,8 +73,8 @@ COMMAND OPTIONS
     -c, --cluster=cluster - cluster name (required, default: none)
 ```
 
-```shell
-ecs-cmd get services -c testing
+```text
+$ ecs-cmd get services -c testing
 +--------------------+---------------+---------------+---------------+
 | SERVICE NAME       | DESIRED_COUNT | RUNNING_COUNT | PENDING_COUNT |
 +--------------------+---------------+---------------+---------------+
@@ -87,8 +87,8 @@ ecs-cmd get services -c testing
 
 Get information on a specific service in a cluster.
 
-```shell
-cs-cmd get service --help
+```text
+$ ecs-cmd get service --help
 NAME
     service -
 
@@ -102,8 +102,8 @@ COMMAND OPTIONS
     -t, --[no-]task_definition - get current task definition for service
 ```
 
-```shell
-ecs-cmd get service -c production -s foo
+```text
+$ ecs-cmd get service -c production -s foo
 +------+--------+---------------+---------------+---------------+-------------+-------------+
 | NAME | STATUS | RUNNING COUNT | DESIRED COUNT | PENDING COUNT | MAX HEALTHY | MIN HEALTHY |
 +------+--------+---------------+---------------+---------------+-------------+-------------+
@@ -131,20 +131,24 @@ ecs-cmd get service -c production -s foo
 | running count   | 2                                                                    |
 | created at      | 2018-12-07 09:44:59 -0800                                            |
 | updated at      | 2018-12-07 09:45:58 -0800                                            |
-
 +-----------------+----------------------------------------------------------------------+
++------------------------------------------------------------------------------+---------------------+---------------+
+| TASK_ID                                                                      | INSTANCE_ID         | IP            |
++------------------------------------------------------------------------------+---------------------+---------------+
+| arn:aws:ecs:us-east-1:xxxxxxxxxxxx:task/50a84065-4bcf-4450-9a3b-3ee411bb3fb0 | i-xxxxxxxxxxxxxxxxx | 10.20.205.150 |
++------------------------------------------------------------------------------+---------------------+---------------+
 ```
 
 ### Logs
 
 **_works for ec2 type services only_**
 
-**_requires ssh access to instance_**
+**_requires ssh access to instance and sudo or docker group membership_**
 
 Streams logs from 1 of a services running tasks using the docker logs command
 
-```shell
-ecs-cmd logs --help
+```text
+$ ecs-cmd logs --help
 NAME
     logs - Tail Logs From a Service's Container
 
@@ -155,6 +159,7 @@ COMMAND OPTIONS
     -c, --cluster=cluster - cluster name (required, default: none)
     -l, --lines=lines     - number of historical lines to tail (default: 30)
     -s, --service=service - service name (required, default: none)
+    --[no-]sudo           - use sudo for docker commands, necessary if not in docker group (default: enabled)
 ```
 
 ### Run Task
@@ -163,8 +168,8 @@ Run a one off task in ECS. This will poll for the task to exit and report its ex
 handy for tasks like rails migrations in ci/cd pipelines. If a docker image is passed it will create a new revision of 
 the task definition prior to running the task.
 
-```shell
-ecs-cmd run-task --help
+```text
+$ ecs-cmd run-task --help
 NAME
     run-task - Run a One Off Task On an ECS Cluster
 
@@ -179,27 +184,28 @@ COMMAND OPTIONS
     -t, --task-definition=arg           - the task definition to use for task (required, default: none)
 ```
 
-### Shell
+### Exec
 
-**_works for ec2 type services only_**
+**_works for ec2 type services only and requires sudo or docker group membership_**
 
 **_requires ssh access to instance_**
 
-Open a shell inside of a container for a given service.
+Run a command inside a container for a given service. If a shell is given as a command (e.g. `sh`)
+an interactive login terminal will be opened.
 
-```shell
-ecs-cmd shell --help
+```text
+$ ecs-cmd shell --help
 NAME
-    shell - Open a Shell Inside a Service's Container
+    exec - Open a Shell Inside a Service's Container
 
 SYNOPSIS
-    ecs-cmd [global options] shell [command options]
+    ecs-cmd [global options] exec [command options] command
 
 COMMAND OPTIONS
     -c, --cluster=cluster - cluster name (required, default: none)
     -s, --service=service - service name (required, default: none)
-    --[no-]sh             - use sh instead of bash
-    -u, --user=user       - user name or uid (default: root)
+    --[no-]sudo           - use sudo for docker commands, necessary if not in docker group (default: enabled)
+    -u, --user=user       - user name or uid of container user (default: root)
 ```
 
 ### SSH
@@ -210,8 +216,8 @@ COMMAND OPTIONS
 
 SSH onto a host where a container for a given service is running.
 
-```shell
-ecs-cmd ssh --help
+```text
+$ ecs-cmd ssh --help
 NAME
     ssh - SSH into Host Task is Running On
 
