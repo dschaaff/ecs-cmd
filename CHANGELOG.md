@@ -1,5 +1,7 @@
 # Next
 
+# 0.2.0
+
 - add --sudo flag to enable running docker commands with sudo, defaults to true
 - Combine shell and exec commands. Pass a shell like `sh` or `bash` to interactively login to a container.
 

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ecs_cmd (0.1.7)
+    ecs_cmd (0.2.0)
       aws-sdk-ec2
       aws-sdk-ecs
       gli (= 2.18.0)
@@ -11,20 +11,21 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.0)
-    aws-eventstream (1.0.1)
-    aws-partitions (1.133.0)
-    aws-sdk-core (3.46.0)
-      aws-eventstream (~> 1.0)
-      aws-partitions (~> 1.0)
-      aws-sigv4 (~> 1.0)
+    aws-eventstream (1.0.3)
+    aws-partitions (1.286.0)
+    aws-sdk-core (3.92.0)
+      aws-eventstream (~> 1.0, >= 1.0.2)
+      aws-partitions (~> 1, >= 1.239.0)
+      aws-sigv4 (~> 1.1)
       jmespath (~> 1.0)
-    aws-sdk-ec2 (1.67.0)
-      aws-sdk-core (~> 3, >= 3.39.0)
-      aws-sigv4 (~> 1.0)
-    aws-sdk-ecs (1.28.0)
-      aws-sdk-core (~> 3, >= 3.39.0)
-      aws-sigv4 (~> 1.0)
-    aws-sigv4 (1.0.3)
+    aws-sdk-ec2 (1.151.0)
+      aws-sdk-core (~> 3, >= 3.71.0)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-ecs (1.59.0)
+      aws-sdk-core (~> 3, >= 3.71.0)
+      aws-sigv4 (~> 1.1)
+    aws-sigv4 (1.1.1)
+      aws-eventstream (~> 1.0, >= 1.0.2)
     backport (0.3.0)
     coderay (1.1.2)
     diff-lcs (1.3)
